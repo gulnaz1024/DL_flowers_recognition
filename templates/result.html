@@ -9,7 +9,12 @@
     <h1>Prediction Result</h1>
     <p>Predicted Flower Class: <strong>{{ flower_class }}</strong></p>
     <p>Probability: <strong>{{ (prob * 100) | round(2) }}%</strong></p>
-    <br>
+
+    <!-- Display the uploaded image -->
+    <h2>Uploaded Image:</h2>
+    <img src="{{ url_for('static', filename=image_url) }}" alt="Uploaded Image" style="max-width: 400px; max-height: 400px;">
+
+    <br><br>
     <a href="/">Go back to upload page</a>
 </body>
 </html>
