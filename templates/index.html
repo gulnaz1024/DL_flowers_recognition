@@ -18,10 +18,32 @@
         /* Style for the file input button */
         #choose-button {
             position: absolute;
-            bottom: 10%; /* 10
-            % from the bottom of the page */
+            bottom: 10%; /* 10% from the bottom of the page */
             left: 50%;
             transform: translateX(-50%); /* Center the button horizontally */
+        }
+
+        /* Hide default file input text */
+        #file {
+            display: none;
+        }
+
+        /* Custom style for the visible button */
+        #file-label {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px 40px;  /* Increase padding to make the button larger */
+            border-radius: 10px;  /* Make the button edges rounded */
+            cursor: pointer;
+            font-size: 24px;  /* Increase font size */
+            text-align: center;
+            width: 250px; /* Make button width larger */
+            display: inline-block;
+        }
+
+        /* Optional: Add a hover effect for better interactivity */
+        #file-label:hover {
+            background-color: #45a049;  /* Darker shade of green when hovered */
         }
     </style>
 </head>
@@ -30,7 +52,11 @@
 
     <!-- Form to upload image -->
     <form id="choose-button" action="/" method="post" enctype="multipart/form-data">
+        <!-- Hidden file input -->
         <input type="file" name="file" id="file" accept="image/*" onchange="this.form.submit()">
+
+        <!-- Custom label acting as a button -->
+        <label for="file" id="file-label">Choose Image</label>
     </form>
 
     <!-- Display prediction results when available -->
@@ -43,8 +69,5 @@
         <!-- Display uploaded image -->
         <img src="{{ url_for('static', filename=image_url) }}" alt="Uploaded Image" id="result-image" style="display:block; margin:auto;">
     {% endif %}
-
-
-
 </body>
 </html>
