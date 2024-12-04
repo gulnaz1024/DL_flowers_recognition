@@ -4,13 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flower Recognition</title>
+    <style>
+        #result-image {
+            max-width: 400px;
+            max-height: 400px;
+            display: none; /* Скрыть результат до предсказания */
+        }
+    </style>
 </head>
 <body>
     <h1>Flower Recognition</h1>
-    <form action="/predict" method="post" enctype="multipart/form-data">
+
+    <!-- Форма для загрузки изображения (с автоматической отправкой при выборе файла) -->
+    <form id="uploadForm" action="/" method="post" enctype="multipart/form-data">
         <label for="file">Choose an image:</label>
-        <input type="file" name="file" id="file" accept="image/*">
-        <button type="submit">Predict</button>
+        <input type="file" name="file" id="file" accept="image/*" onchange="this.form.submit()">
     </form>
+
+    <!-- Показ результатов -->
+    {% if flower_class %}
+        <h2>Prediction Result:</h2>
+        <p>Predicted Flower Class: <strong>{{ flower_class }}</strong></p>
+        <p>Probability: <strong>{{ (prob * 100) | round(2) }}%</strong></p>
+
+        <!-- Здесь выводим изображение -->
+        <img src="{{ url_for('static', filename=image_url) }}" alt="Uploaded Image" style="max-width: 400px; max-height: 400px;">
+
+    {% endif %}
+
+    <br><br>
+    <a href="/">Go back to upload page</a>
 </body>
 </html>

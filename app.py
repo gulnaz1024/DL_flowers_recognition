@@ -44,49 +44,45 @@ def allowed_file(filename):
 
 
 # Route to home page (index page)
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    return render_template('index.html')
+    flower_class = None
+    prob = None
+    image_url = None
 
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return 'No file part'
 
-# Route to handle image upload and prediction
-@app.route('/predict', methods=['POST'])
-def predict():
-    if 'file' not in request.files:
-        return "No file part"
+        file = request.files['file']
 
-    file = request.files['file']
+        if file.filename == '':
+            return 'No selected file'
 
-    if file.filename == '':
-        return 'No selected file'
+        if file and allowed_file(file.filename):
+            # Save the file
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
 
-    if file and allowed_file(file.filename):
-        # Save the file
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
+            # Process the image
+            image = Image.open(filepath)
+            image = transform(image).unsqueeze(0)
 
-        # Process the image
-        image = Image.open(filepath)
-        image = transform(image).unsqueeze(0)
+            # Perform prediction
+            with torch.no_grad():
+                output = model(image)
+                _, predicted = torch.max(output, 1)
+                flower_class = class_names[predicted.item()]
 
-        # Perform prediction
-        with torch.no_grad():
-            output = model(image)
-            _, predicted = torch.max(output, 1)
-            flower_class = predicted.item()
+                # Get the probability for the predicted class
+                probs = torch.nn.functional.softmax(output, dim=1)
+                prob = probs[0][predicted.item()].item()
 
-            # Get the probability for the predicted class
-            probs = torch.nn.functional.softmax(output, dim=1)
-            prob = probs[0][flower_class].item()
+            # Path to the uploaded image
+            image_url = os.path.join('uploads', filename).replace("\\", "/")  # Ensure forward slashes
 
-        # Return the predicted class, probability, and image path to the result page
-        image_url = os.path.join('uploads', filename)  # Correct the image URL
-        image_url = image_url.replace("\\", "/")  # Замените обратные слэши на косые
-
-        return render_template('result.html', flower_class=class_names[flower_class], prob=prob, image_url=image_url)
-
-    return 'File format not supported'
+    return render_template('index.html', flower_class=flower_class, prob=prob, image_url=image_url)
 
 
 if __name__ == '__main__':
