@@ -14,13 +14,22 @@
         #result-text {
             text-align: center;
         }
+
+        /* Style for the file input button */
+        #choose-button {
+            position: absolute;
+            bottom: 10%; /* 10
+            % from the bottom of the page */
+            left: 50%;
+            transform: translateX(-50%); /* Center the button horizontally */
+        }
     </style>
 </head>
 <body>
     <h1 style="text-align: center;">Flower Recognition</h1>
 
     <!-- Form to upload image -->
-    <form id="uploadForm" action="/" method="post" enctype="multipart/form-data">
+    <form id="choose-button" action="/" method="post" enctype="multipart/form-data">
         <input type="file" name="file" id="file" accept="image/*" onchange="this.form.submit()">
     </form>
 
@@ -34,6 +43,8 @@
         <!-- Display uploaded image -->
         <img src="{{ url_for('static', filename=image_url) }}" alt="Uploaded Image" id="result-image" style="display:block; margin:auto;">
     {% endif %}
+
+
 
 </body>
 </html>
