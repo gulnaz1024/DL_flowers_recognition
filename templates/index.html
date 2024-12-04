@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flower Recognition</title>
     <style>
+        /* Set background color and style */
+        body {
+            background-color: #e6f7ff;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
         #result-image {
             max-width: 400px;
             max-height: 400px;
@@ -18,7 +25,7 @@
         /* Style for the file input button */
         #choose-button {
             position: absolute;
-            bottom: 10%; /* 10% from the bottom of the page */
+            bottom: 5%; /* 5% from the bottom of the page */
             left: 50%;
             transform: translateX(-50%); /* Center the button horizontally */
         }
@@ -43,12 +50,17 @@
 
         /* Optional: Add a hover effect for better interactivity */
         #file-label:hover {
-            background-color: #45a049;  /* Darker shade of green when hovered */
+            background-color: #00a85d;  /* Darker shade of green when hovered */
         }
     </style>
 </head>
 <body>
-    <h1 style="text-align: center;">Flower Recognition</h1>
+    <h1 style="text-align: center; margin-bottom: 5px;">Flower Recognition</h1>
+
+    <!-- Smaller text with flower names, with reduced gap below -->
+    <p style="text-align: center; font-size: 14px; color: #555; margin-top: 0;">
+        (Daisy, Sunflowers, Tulips, Dandelion, Roses)
+    </p>
 
     <!-- Form to upload image -->
     <form id="choose-button" action="/" method="post" enctype="multipart/form-data">
