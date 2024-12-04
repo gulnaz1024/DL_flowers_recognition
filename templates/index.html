@@ -8,31 +8,32 @@
         #result-image {
             max-width: 400px;
             max-height: 400px;
-            display: none; /* Скрыть результат до предсказания */
+            display: none; /* Initially hide the image */
+            margin-top: 20px;
+        }
+        #result-text {
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>Flower Recognition</h1>
+    <h1 style="text-align: center;">Flower Recognition</h1>
 
-    <!-- Форма для загрузки изображения (с автоматической отправкой при выборе файла) -->
+    <!-- Form to upload image -->
     <form id="uploadForm" action="/" method="post" enctype="multipart/form-data">
-        <label for="file">Choose an image:</label>
         <input type="file" name="file" id="file" accept="image/*" onchange="this.form.submit()">
     </form>
 
-    <!-- Показ результатов -->
+    <!-- Display prediction results when available -->
     {% if flower_class %}
-        <h2>Prediction Result:</h2>
-        <p>Predicted Flower Class: <strong>{{ flower_class }}</strong></p>
-        <p>Probability: <strong>{{ (prob * 100) | round(2) }}%</strong></p>
+        <div id="result-text">
+            <!-- Display class and accuracy together -->
+            <h2>{{ flower_class }} ({{ (prob * 100) | round(2) }}%)</h2>
+        </div>
 
-        <!-- Здесь выводим изображение -->
-        <img src="{{ url_for('static', filename=image_url) }}" alt="Uploaded Image" style="max-width: 400px; max-height: 400px;">
-
+        <!-- Display uploaded image -->
+        <img src="{{ url_for('static', filename=image_url) }}" alt="Uploaded Image" id="result-image" style="display:block; margin:auto;">
     {% endif %}
 
-    <br><br>
-    <a href="/">Go back to upload page</a>
 </body>
 </html>

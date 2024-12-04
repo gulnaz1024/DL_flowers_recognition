@@ -22,11 +22,11 @@ model.eval()  # Set the model to evaluation mode
 
 # Class names dictionary
 class_names = {
-    0: 'daisy',
-    1: 'dandelion',
-    2: 'roses',
-    3: 'sunflowers',
-    4: 'tulips'
+    0: 'Daisy',
+    1: 'Dandelion',
+    2: 'Roses',
+    3: 'Sunflowers',
+    4: 'Tulips'
 }
 
 # Image transformations (adjust as needed)
