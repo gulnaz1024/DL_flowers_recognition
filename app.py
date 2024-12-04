@@ -4,14 +4,23 @@ from flask import Flask, render_template, request
 from PIL import Image
 
 # Initialize Flask app
-app = Flask(__name__)  # Use __name__ instead of name
+app = Flask(__name__)
 
 # Load the trained model
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = torch.load('flower_model.pth', map_location=device)
 model.eval()  # Set the model to evaluation mode
 
-# Image transformations (you can adjust these based on your dataset)
+# Class names dictionary
+class_names = {
+    0: 'daisy',
+    1: 'dandelion',
+    2: 'roses',
+    3: 'sunflowers',
+    4: 'tulips'
+}
+
+# Image transformations (adjust as needed)
 transform = transforms.Compose([
     transforms.Resize(256),
     transforms.CenterCrop(224),
@@ -19,7 +28,7 @@ transform = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
-# Route to home page
+# Route to home page (index page)
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -29,7 +38,6 @@ def home():
 def predict():
     if 'file' not in request.files:
         return "No file part"
-
     file = request.files['file']
     if file.filename == '':
         return 'No selected file'
@@ -41,12 +49,15 @@ def predict():
     # Perform prediction
     with torch.no_grad():
         output = model(image)
-        # Assuming you have a function to map output to flower class (index)
         _, predicted = torch.max(output, 1)
         flower_class = predicted.item()
 
-    return f'Predicted flower class: {flower_class}'
+        # Get the probability for the predicted class
+        probs = torch.nn.functional.softmax(output, dim=1)
+        prob = probs[0][flower_class].item()
 
-# Correct entry point check
-if __name__ == '__main__':  # Use __name__ instead of name
+    # Return the predicted class and probability to the result page
+    return render_template('result.html', flower_class=class_names[flower_class], prob=prob)
+
+if __name__ == '__main__':
     app.run(debug=True)

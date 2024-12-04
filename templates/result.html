@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flower Recognition Result</title>
+</head>
+<body>
+    <h1>Prediction Result</h1>
+    <p>Predicted Flower Class: <strong>{{ flower_class }}</strong></p>
+    <p>Probability: <strong>{{ (prob * 100) | round(2) }}%</strong></p>
+    <br>
+    <a href="/">Go back to upload page</a>
+</body>
+</html>
