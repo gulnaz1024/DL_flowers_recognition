@@ -1,4 +1,5 @@
 import os
+import shutil
 from werkzeug.utils import secure_filename
 import torch
 import torchvision.transforms as transforms
@@ -43,6 +44,25 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+# Function to clean up the uploads folder when the number of files exceeds 20
+def clean_up_uploads_folder(max_files=25):
+    # List all files in the uploads folder
+    files = os.listdir(UPLOAD_FOLDER)
+
+    # Check if the number of files exceeds max_files
+    if len(files) > max_files:
+        # Empty the uploads folder by deleting all files
+        for file in files:
+            if file != ".gitkeep":  # Skip the .gitkeep file
+                file_path = os.path.join(UPLOAD_FOLDER, file)
+                try:
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)  # Delete the file
+                    elif os.path.isdir(file_path):
+                        shutil.rmtree(file_path)  # Remove directories if any
+                except Exception as e:
+                    print(f"Error while deleting file {file_path}: {e}")
+
 # Route to home page (index page)
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -60,7 +80,10 @@ def home():
             return 'No selected file'
 
         if file and allowed_file(file.filename):
-            # Save the file
+            # Clean up the uploads folder if the number of files exceeds 20
+            clean_up_uploads_folder()
+
+            # Save the new file
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
